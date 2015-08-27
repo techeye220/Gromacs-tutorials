@@ -1,0 +1,2 @@
+source /usr/local/gromacs/bin/GMXRC
+ GMX pdb2gmx -ignh -ff amber99sb-ildn -f fws.pdb -o fws.gro -p fws.top -water tip3p
