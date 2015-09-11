@@ -1,0 +1,37 @@
+#include<stdio.h>
+main()
+{
+FILE *fp;
+char ch;
+int i,j,k,l;
+double a=5.42;
+//double lattice[18][2];
+double lattice[19][3]={{0,0,0},{0,0,0},{1,0,0},{0,1,0},{0,0,1},
+                 {1,1,1},{1,1,0},{1,0,1},{0,1,1},
+                 {0.5,0.5,0},{0,0.5,0.5},{0.5,0,0.5},{0.5,0.5,1},{0.5,1,0.5},{1,0.5,0.5},
+                 {0.75,0.25,0.75},{0.25,0.75,0.75},{0.25,0.25,0.25},{0.75,0.75,0.25}
+                };
+printf("%f%5s\n",a,"LIG");
+
+printf("%f\t%f\t%f\n",a,lattice[2][0],lattice[18][0]);
+
+if((fp=fopen("F:\\RSO\\Coding\\C files\\Si_3.gro","wt+"))==NULL)
+ {
+  printf("Cannot open file strike any key exit!");
+  getch();
+  exit(1);
+ }
+ k=1;
+ l=18;
+ fprintf(fp,"\n%d\n",l);
+ for(i=1;i<=18;i++)
+ {
+        fprintf(fp,"%5d%-5s%5s%5d%8.3f%8.3f%8.3f\n",k,"LIG","SI",k,a*lattice[i][0],a*lattice[i][1],a*lattice[i][2]);
+        k++;
+        if(i==18)
+            fprintf(fp,"%10.5f%10.5f%10.5f\n",0.0,0.0,0.0);
+ }
+//硅金刚石模型
+ fclose(fp);
+ return 0;
+}
