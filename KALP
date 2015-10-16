@@ -1,0 +1,40 @@
+gmx grompp -f minim.mdp -c system_inflated.gro -p topol.top -o em_inflated01.tpr
+
+gmx mdrun -v -s em_01.tpr -deffnm confout
+
+gmx pdb2gmx -f dppc128.pdb -o dppc128_processed.gro -ignh -ter -water spc
+
+gmx editconf -f dppc128.pdb -o dppc128_processed.gro -c -d 1.0 -bt cubic
+
+perl inflategro.pl confout.gro 0.95 DPPC 0 system_shrink1.gro 5 area_shrink1.dat
+
+gmx grompp -f minim.mdp -c system_shrink1.gro -p topol.top -o em_1.tpr
+
+gmx mdrun -v -s em_1.tpr -deffnm confout_1
+
+perl inflategro.pl confout_1.gro 0.95 DPPC 0 system_shrink2.gro 5 area_shrink2.dat
+
+confout_26.gro
+
+gmx solvate -cp confout_26.gro -cs spc216.gro -o confout_solv26.gro -p topol.top
+
+gmx grompp -f ions.mdp -c confout_solv26c.gro -p topol.top -o ions.tpr
+
+gmx genion -s ions.tpr -o confout_solv26c_ions.gro -p topol.top -pname NA -nname CL -nn 4
+
+gmx grompp -f minim.mdp -c confout_solv26c_ions.gro -p topol.top -o em.tpr
+
+gmx mdrun -v -deffnm em
+
+gmx make_ndx -f em.gro -o index.ndx
+
+gmx grompp -f nvt.mdp -c em.gro -p topol.top -n index.ndx -o nvt.tpr
+
+gmx mdrun -deffnm nvt
+
+gmx grompp -f npt.mdp -c nvt.gro -t nvt.cpt -p topol.top -n index.ndx -o npt.tpr
+
+gmx mdrun -nt x -deffnm npt
+
+gmx grompp -f md.mdp -c npt.gro -t npt.cpt -p topol.top -n index.ndx -o md_0_1.tpr
+gmx mdrun -deffnm md_0_1
